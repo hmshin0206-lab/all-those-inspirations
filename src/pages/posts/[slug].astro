@@ -15,8 +15,8 @@ const section = SECTIONS.find((s) => s.category === post.data.category);
 const year = post.data.date.getFullYear();
 const age = new Date().getFullYear() - year;
 const margin = [
-  { text: `> ${readingMinutes(post)}분이면 읽어요.` },
-  { text: '> 이어서 읽기 좋은 노트:' },
+  { text: `> ${readingMinutes(post)} min read.` },
+  { text: '> Notes worth reading next:' },
   ...related(post, posts).map((p) => ({ text: p.data.title, href: postUrl(p) })),
 ];
 ---
@@ -33,14 +33,14 @@ const margin = [
     <div class="post-grid">
       <div class="prose"><Content /></div>
       <aside class="margin">
-        {age >= 3 && <div class="hand">✎ {year}년의 내가 쓴 글</div>}
+        {age >= 3 && <div class="hand">✎ written by {year} me</div>}
         <MachineMargin lines={margin} />
         {post.data.topics.length > 0 && <div class="topics">{post.data.topics.map((t) => `#${t}`).join('  ')}</div>}
       </aside>
     </div>
   </article>
   <nav class="pager">
-    {older ? <a href={postUrl(older)}><span class="kicker">← 이전 글</span><b>{older.data.title}</b></a> : <span></span>}
-    {newer && <a href={postUrl(newer)}><span class="kicker">다음 글 →</span><b>{newer.data.title}</b></a>}
+    {older ? <a href={postUrl(older)}><span class="kicker">← Older</span><b>{older.data.title}</b></a> : <span></span>}
+    {newer && <a href={postUrl(newer)}><span class="kicker">Newer →</span><b>{newer.data.title}</b></a>}
   </nav>
 </Base>

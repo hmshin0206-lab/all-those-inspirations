@@ -8,7 +8,7 @@ const nav = [['Essays', '/essays/'], ['Study Notes', '/study-notes/'], ['Build L
 const here = Astro.url.pathname;
 ---
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,7 +20,7 @@ const here = Astro.url.pathname;
     {image && <meta property="og:image" content={image} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Gowun+Batang:wght@400;700&family=Caveat:wght@500;600&family=Nanum+Pen+Script&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Caveat:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
     <header class="nav">
@@ -29,7 +29,7 @@ const here = Astro.url.pathname;
     </header>
     <main><slot /></main>
     <footer class="foot">
-      <span>© {new Date().getFullYear()} Heather Shin · 손글씨는 사람이, 여백의 타자 글씨는 기계가 씁니다.</span>
+      <span>© {new Date().getFullYear()} Heather Shin · Handwriting by a human, typed margins by a machine.</span>
       <nav>
         <a href="/archive/">Archive</a>
         <a href="https://www.linkedin.com/in/heemyung-shin-71284b47/">LinkedIn</a>

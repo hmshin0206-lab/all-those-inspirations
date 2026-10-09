@@ -22,5 +22,5 @@ const years = [...new Set(posts.map((p) => p.data.date.getFullYear()))];
       <div>{posts.filter((p) => p.data.date.getFullYear() === y).map((p) => <PostRow post={p} show={section.category === 'essays' ? 'date' : 'stage'} meta />)}</div>
     </section>
   ))}
-  {posts.length === 0 && <section class="year"><span>soon</span><div class="hand">곧 첫 기록이 올라옵니다</div></section>}
+  {posts.length === 0 && <section class="year"><span>soon</span><div class="hand">First entry coming soon</div></section>}
 </Base>

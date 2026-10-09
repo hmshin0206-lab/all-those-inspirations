@@ -4,9 +4,9 @@ export type Post = CollectionEntry<'posts'>;
 export type Category = Post['data']['category'];
 
 export const SECTIONS = [
-  { category: 'essays', slug: 'essays', title: 'Essays', blurb: '업계에서 보고, 일하며 생각한 것들.' },
-  { category: 'study', slug: 'study-notes', title: 'Study Notes', blurb: '공부한 것들. 다 자란 노트도, 아직 자라는 노트도 있습니다.' },
-  { category: 'build', slug: 'build-log', title: 'Build Log', blurb: '직접 만들어 본 것들의 기록.' },
+  { category: 'essays', slug: 'essays', title: 'Essays', blurb: 'What I notice at work and across the industry.' },
+  { category: 'study', slug: 'study-notes', title: 'Study Notes', blurb: 'Things I am learning. Some notes are finished, some are still growing.' },
+  { category: 'build', slug: 'build-log', title: 'Build Log', blurb: 'A record of the things I build myself.' },
 ] as const satisfies readonly { category: Category; slug: string; title: string; blurb: string }[];
 
 export const CATEGORY_LABEL: Record<Category, string> = { essays: 'Essay', study: 'Study Note', build: 'Build Log', life: 'Life' };

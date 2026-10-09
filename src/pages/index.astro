@@ -8,8 +8,8 @@ const posts = await allPosts();
 const shelf = posts.filter((p) => p.data.category !== 'life');
 const latest = shelf[0];
 const margin = [
-  { text: `> 최근 글 "${latest.data.title}"` },
-  { text: '> 이 글과 이어지는 노트 3개를 찾았어요.' },
+  { text: `> Latest: "${latest.data.title}"` },
+  { text: '> Found 3 notes that connect to it.' },
   ...related(latest, posts).map((p) => ({ text: p.data.title, href: postUrl(p) })),
 ];
 ---
@@ -21,14 +21,14 @@ const margin = [
         What happens when <span class="mark" data-annotate="circle" data-color="#C2553A">curiosity</span> meets
         <span class="end"><span class="mark" data-annotate="line" data-delay="1.5">execution</span>?<span class="aside" aria-hidden="true">
           <svg viewBox="0 0 56 44" fill="none" stroke="#3B4468" stroke-width="2" stroke-linecap="round"><path d="M53 36 C38 38, 18 28, 7 7" /><path d="M5 21 L7 7 L20 12" /></svg>
-          <span>여기가 늘 출발점</span>
+          <span>always where I start</span>
         </span></span>
       </h1>
-      <p class="lede">공부한 것, 업계에서 본 것, 직접 만들어 본 것을 적어 둡니다. 다 쓴 글뿐 아니라 아직 자라는 중인 노트도 함께 둡니다.</p>
+      <p class="lede">Notes on what I study, what I see in the industry, and what I build. Finished essays sit next to notes that are still growing.</p>
     </section>
     <aside class="hero-right">
       <div>
-        <div class="label">최근에 쓴 노트</div>
+        <div class="label">Recent notes</div>
         {shelf.slice(0, 3).map((p) => <PostRow post={p} show="stage" />)}
       </div>
       <MachineMargin lines={margin} />
@@ -43,7 +43,7 @@ const margin = [
           <h2>{s.title}</h2>
           <p>{s.blurb}</p>
           {list.slice(0, 4).map((p) => <PostRow post={p} />)}
-          {list.length ? <a class="more" href={`/${s.slug}/`}>{list.length}편 모두 보기 →</a> : <div class="hand empty">곧 첫 기록이 올라옵니다</div>}
+          {list.length ? <a class="more" href={`/${s.slug}/`}>See all {list.length} →</a> : <div class="hand empty">First entry coming soon</div>}
         </section>
       );
     })}
