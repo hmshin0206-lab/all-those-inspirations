@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
+import { allPosts, SECTIONS } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return SECTIONS.map((section) => ({ params: { section: section.slug }, props: { section } }));
+}
+const { section } = Astro.props;
+const posts = (await allPosts()).filter((p) => p.data.category === section.category);
+const years = [...new Set(posts.map((p) => p.data.date.getFullYear()))];
+---
+<Base title={section.title} description={section.blurb}>
+  <header class="page-head">
+    <p class="kicker">All Those Inspirations</p>
+    <h1><span class="mark" data-annotate="line">{section.title}</span>{posts.length > 0 && <span class="hand">{posts.length} notes</span>}</h1>
+    <p class="lede">{section.blurb}</p>
+  </header>
+  {years.map((y) => (
+    <section class="year">
+      <span>{y}</span>
+      <div>{posts.filter((p) => p.data.date.getFullYear() === y).map((p) => <PostRow post={p} show={section.category === 'essays' ? 'date' : 'stage'} meta />)}</div>
+    </section>
+  ))}
+  {posts.length === 0 && <section class="year"><span>soon</span><div class="hand">곧 첫 기록이 올라옵니다</div></section>}
+</Base>

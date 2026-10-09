@@ -1,0 +1,119 @@
+---
+import '../styles/global.css';
+
+interface Props { title?: string; description?: string; image?: string }
+const SITE = 'All Those Inspirations';
+const { title, description = "Heather Shin's notes on tech, change, and growth.", image } = Astro.props;
+const nav = [['Essays', '/essays/'], ['Study Notes', '/study-notes/'], ['Build Log', '/build-log/'], ['Work', '/work/'], ['Now', '/now/']];
+const here = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title ? `${title} — ${SITE}` : `${SITE} — Heather Shin`}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title ?? SITE} />
+    <meta property="og:description" content={description} />
+    {image && <meta property="og:image" content={image} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Gowun+Batang:wght@400;700&family=Caveat:wght@500;600&family=Nanum+Pen+Script&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="nav">
+      <a class="brand" href="/">{SITE}</a>
+      <nav>{nav.map(([label, href]) => <a href={href} class:list={{ on: here.startsWith(href) }}>{label}</a>)}</nav>
+    </header>
+    <main><slot /></main>
+    <footer class="foot">
+      <span>© {new Date().getFullYear()} Heather Shin · 손글씨는 사람이, 여백의 타자 글씨는 기계가 씁니다.</span>
+      <nav>
+        <a href="/archive/">Archive</a>
+        <a href="https://www.linkedin.com/in/heemyung-shin-71284b47/">LinkedIn</a>
+        <a href="https://www.threads.com/@hm.shin">Threads</a>
+        <a href="mailto:hmshin0206@gmail.com">Email</a>
+      </nav>
+    </footer>
+    <script>
+      // Hand-drawn circles and underlines for [data-annotate="circle|line"], redrawn when the word changes size.
+      const NS = 'http://www.w3.org/2000/svg';
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const jitter = () => Math.random() - 0.5;
+      const smooth = (p: number[][]) => {
+        let d = `M${p[0][0]},${p[0][1]}`;
+        for (let i = 1; i < p.length - 1; i++) d += ` Q${p[i][0]},${p[i][1]} ${(p[i][0] + p[i + 1][0]) / 2},${(p[i][1] + p[i + 1][1]) / 2}`;
+        return d;
+      };
+      function draw(el: HTMLElement, animate: boolean) {
+        el.querySelector(':scope > svg.anno')?.remove();
+        const circle = el.dataset.annotate === 'circle';
+        const pad = circle ? Math.max(8, el.offsetHeight * 0.18) : 4;
+        const w = el.offsetWidth + pad * 2, h = el.offsetHeight + pad * 2, pts: number[][] = [];
+        if (circle) {
+          for (let i = 0; i <= 30; i++) {
+            const a = -2.5 + (i / 27) * Math.PI * 2, g = 1 + i * 0.003;
+            pts.push([w / 2 + Math.cos(a) * (w / 2) * (g + jitter() * 0.04), h / 2 + Math.sin(a) * (h / 2 - pad * 0.4) * (g + jitter() * 0.06)]);
+          }
+        } else {
+          const y = h - pad - 2;
+          for (let i = 0; i <= 8; i++) pts.push([pad + (i / 8) * el.offsetWidth, y + jitter() * 4]);
+          for (let i = 8; i >= 1; i--) pts.push([pad + (i / 8) * el.offsetWidth, y + 6 + jitter() * 4]);
+        }
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', 'anno');
+        svg.setAttribute('width', String(w));
+        svg.setAttribute('height', String(h));
+        svg.style.left = svg.style.top = `${-pad}px`;
+        const path = document.createElementNS(NS, 'path');
+        path.setAttribute('d', smooth(pts));
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', el.dataset.color ?? '#3B4468');
+        path.setAttribute('stroke-width', '2.4');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('opacity', '.85');
+        svg.appendChild(path);
+        el.appendChild(svg);
+        if (!animate || still) return;
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = path.style.strokeDashoffset = String(len);
+        path.style.transition = `stroke-dashoffset 1.2s ease ${el.dataset.delay ?? '.4'}s`;
+        requestAnimationFrame(() => requestAnimationFrame(() => (path.style.strokeDashoffset = '0')));
+      }
+      const marks = [...document.querySelectorAll<HTMLElement>('[data-annotate]')];
+      document.fonts.ready.then(() => {
+        marks.forEach((el) => draw(el, true));
+        let width = innerWidth, timer = 0;
+        addEventListener('resize', () => {
+          if (innerWidth === width) return;
+          width = innerWidth;
+          clearTimeout(timer);
+          timer = window.setTimeout(() => marks.forEach((el) => draw(el, false)), 150);
+        });
+      });
+
+      // Machine margin: type the lines out once the box scrolls into view.
+      document.querySelectorAll<HTMLElement>('[data-mm]').forEach((box) => {
+        if (still) return;
+        const body = box.querySelector<HTMLElement>('.mm-body')!;
+        const lines = [...body.querySelectorAll<HTMLElement>('.mm-line')];
+        const html = lines.map((l) => l.innerHTML), text = lines.map((l) => l.textContent ?? '');
+        body.style.minHeight = `${body.offsetHeight}px`;
+        lines.forEach((l) => (l.textContent = ''));
+        new IntersectionObserver((entries, io) => {
+          if (!entries[0].isIntersecting) return;
+          io.disconnect();
+          let li = 0, ci = 0;
+          (function type() {
+            if (li >= lines.length) return;
+            lines[li].textContent = text[li].slice(0, ++ci);
+            if (ci >= text[li].length) { lines[li].innerHTML = html[li]; li++; ci = 0; setTimeout(type, 280); }
+            else setTimeout(type, 22);
+          })();
+        }).observe(box);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+---
+interface Props { lines: { text: string; href?: string }[] }
+const { lines } = Astro.props;
+---
+<div>
+  <aside class="ai" data-mm>
+    <div class="head"><span>✦ MACHINE MARGIN</span><span>auto-generated</span></div>
+    <div class="mm-body">
+      {lines.map((l) => <div class="mm-line">{l.href ? <>→ <a href={l.href}>{l.text}</a></> : l.text}</div>)}
+      <span class="cursor"></span>
+    </div>
+  </aside>
+  <p class="fine">이 여백은 글끼리의 유사도를 계산해 자동으로 채워집니다.</p>
+</div>

@@ -1,0 +1,15 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const { Content } = await render((await getEntry('pages', 'about'))!);
+---
+<Base title="Now" description="About Heather Shin.">
+  <header class="page-head">
+    <p class="kicker">All Those Inspirations</p>
+    <h1><span class="mark" data-annotate="line">Now</span><span class="hand">& about me</span></h1>
+  </header>
+  <div class="post-grid">
+    <div class="prose"><Content /></div>
+  </div>
+</Base>

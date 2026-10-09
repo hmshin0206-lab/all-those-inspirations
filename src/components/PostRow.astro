@@ -1,0 +1,13 @@
+---
+import { postUrl, fmtDate, CATEGORY_LABEL, type Post } from '../lib/posts';
+
+interface Props { post: Post; show?: 'stage' | 'date'; meta?: boolean; category?: boolean }
+const { post, show = 'date', meta = false, category = false } = Astro.props;
+const { title, stage, date, topics } = post.data;
+const small = [category && CATEGORY_LABEL[post.data.category], ...(meta ? topics : [])].filter(Boolean).join(' · ');
+---
+<a class="note" href={postUrl(post)}>
+  <span class:list={['stage', stage]} title={stage}></span>
+  <b>{title}{small && <small>{small}</small>}</b>
+  <i>{show === 'stage' ? stage : fmtDate(date)}</i>
+</a>

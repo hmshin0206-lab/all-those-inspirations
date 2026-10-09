@@ -1,0 +1,28 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+// Edit the career summary here; the campaign gallery below it lives in src/content/pages/portfolio.md.
+const jobs = [
+  { when: 'Now', where: 'Kaia', what: 'Leading Web3 initiatives.' },
+  { when: '2018 —', where: 'LINE+', what: 'Scaling messaging platforms: global and Japan feature marketing.' },
+  { when: '2017', where: 'Johns Hopkins Carey Business School', what: 'MS in Marketing. This blog started here, as a Design Leadership class assignment.' },
+  { when: '2011 — 2016', where: 'LG Electronics', what: 'Building consumer tech.' },
+];
+const { Content } = await render((await getEntry('pages', 'portfolio'))!);
+---
+<Base title="Work" description="Heather Shin's career and selected work.">
+  <header class="page-head">
+    <p class="kicker">All Those Inspirations</p>
+    <h1><span class="mark" data-annotate="circle" data-color="#C2553A">Work</span></h1>
+    <p class="lede">LG에서 소비자 테크를, LINE+에서 메신저 플랫폼을, Kaia에서 Web3를. 제품과 성장, 이야기를 다뤄 온 기록입니다.</p>
+  </header>
+  <section class="timeline">
+    {jobs.map((j) => (
+      <div class="job"><span>{j.when}</span><div><b>{j.where}</b><p>{j.what}</p></div></div>
+    ))}
+  </section>
+  <div class="post-grid">
+    <div class="prose"><Content /></div>
+  </div>
+</Base>

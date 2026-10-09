@@ -1,0 +1,46 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import MachineMargin from '../../components/MachineMargin.astro';
+import { allPosts, related, postUrl, fmtDate, readingMinutes, SECTIONS, CATEGORY_LABEL } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  return posts.map((post, i) => ({ params: { slug: post.id }, props: { post, newer: posts[i - 1], older: posts[i + 1] } }));
+}
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+const posts = await allPosts();
+const section = SECTIONS.find((s) => s.category === post.data.category);
+const year = post.data.date.getFullYear();
+const age = new Date().getFullYear() - year;
+const margin = [
+  { text: `> ${readingMinutes(post)}분이면 읽어요.` },
+  { text: '> 이어서 읽기 좋은 노트:' },
+  ...related(post, posts).map((p) => ({ text: p.data.title, href: postUrl(p) })),
+];
+---
+<Base title={post.data.title} description={post.data.description} image={post.data.cover}>
+  <article>
+    <header class="post-head">
+      <p class="kicker">
+        {section ? <a href={`/${section.slug}/`}>{section.title}</a> : <a href="/archive/">{CATEGORY_LABEL[post.data.category]}</a>}
+        · {fmtDate(post.data.date)}{post.data.series && ` · ${post.data.series}`}
+      </p>
+      <h1>{post.data.title}</h1>
+      <svg class="squiggle" viewBox="0 0 150 12" fill="none" stroke="#C2553A" stroke-width="2" stroke-linecap="round"><path d="M2 7 C14 1 24 11 36 6 S58 1 70 7 S94 11 106 5 S134 3 148 7" /></svg>
+    </header>
+    <div class="post-grid">
+      <div class="prose"><Content /></div>
+      <aside class="margin">
+        {age >= 3 && <div class="hand">✎ {year}년의 내가 쓴 글</div>}
+        <MachineMargin lines={margin} />
+        {post.data.topics.length > 0 && <div class="topics">{post.data.topics.map((t) => `#${t}`).join('  ')}</div>}
+      </aside>
+    </div>
+  </article>
+  <nav class="pager">
+    {older ? <a href={postUrl(older)}><span class="kicker">← 이전 글</span><b>{older.data.title}</b></a> : <span></span>}
+    {newer && <a href={postUrl(newer)}><span class="kicker">다음 글 →</span><b>{newer.data.title}</b></a>}
+  </nav>
+</Base>
